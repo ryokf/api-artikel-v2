@@ -27,6 +27,7 @@ class CategoryController extends Controller
                 );
             }
         }
+
         $categories =  Category::all();
         return ResponseFormatter::response(
             200,
