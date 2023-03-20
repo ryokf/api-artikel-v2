@@ -13,8 +13,8 @@ class ArticleController extends Controller
 {
     function index(Request $request)
     {
-        if ($request->slug) {
-            $article = Article::where('slug', $request->slug)?->first();
+        if ($request->slug || $request->id) {
+            $article = Article::where('slug', $request->slug)?->orWhere('id', $request->id)->first();
 
             if ($article) {
                 return ResponseFormatter::response(
@@ -119,7 +119,7 @@ class ArticleController extends Controller
         $titleExp = explode(" ", $request->title);
         $slug = strtolower(implode("-", $titleExp));
 
-        Article::where('slug', $slug)->orWhere('id', $request->id)->update([
+        Article::Where('id', $request->id)->update([
             'title' => $request->title,
             'slug' => $slug,
             'content' => $request->content,
@@ -130,7 +130,7 @@ class ArticleController extends Controller
             'tags' => $request->tags,
         ]);
 
-        $updatedArticle = Article::where('slug', $slug);
+        $updatedArticle = Article::where('id', $request->id);
 
         if(count($updatedArticle->get()) != 0){
             return ResponseFormatter::response(
@@ -149,16 +149,16 @@ class ArticleController extends Controller
 
     function destroy(Request $request)
     {
-        $deletedArticle = Article::where('slug', $request->slug)->first();
+        $deletedArticle = Article::where('id', $request->id)->get();
 
-        if(count($deletedArticle->get()) != 0){
+        if(count($deletedArticle) != 0){
 
-            Article::where('slug', $request->slug)->delete();
+            Article::where('id', $request->id)->delete();
 
             return ResponseFormatter::response(
                 200,
                 'success',
-                new ArticleDetailResource($deletedArticle)
+                ArticleDetailResource::collection($deletedArticle)
             );
         } else {
             return ResponseFormatter::response(

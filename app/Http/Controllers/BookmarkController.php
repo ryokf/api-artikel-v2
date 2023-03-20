@@ -16,7 +16,16 @@ class BookmarkController extends Controller
         return ResponseFormatter::response(200, 'success', BookmarkDetailResource::collection($bookmark));
     }
 
-    function store(Request $request){}
+    function store(Request $request){
+        Bookmark::create([
+            'user_id' => $request->user_id,
+            'article_id' => $request->article_id
+        ]);
+
+        $bookmark = Bookmark::where('user_id', $request->user_id)->where('article_id', $request->article_id)->first();
+
+        return ResponseFormatter::response(200, 'success', new BookmarkDetailResource($bookmark));
+    }
 
     function destroy(Request $request){}
 }
