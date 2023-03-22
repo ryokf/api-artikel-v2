@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     function index(Request $request){
         if($request->id){
-            $category = Category::where('id', $request->id)?->with('articles')->get();
+            $category = Category::where('id', $request->id)?->get();
 
             if (count($category) != 0) {
                 return ResponseFormatter::response(

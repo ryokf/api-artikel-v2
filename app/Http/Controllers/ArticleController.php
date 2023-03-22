@@ -8,6 +8,8 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use app\Helpers\ResponseFormatter;
 use App\Http\Resources\ArticleDetailResource;
+use App\Http\Resources\UserInterestResource;
+use App\Models\UserInterest;
 
 class ArticleController extends Controller
 {
@@ -51,17 +53,26 @@ class ArticleController extends Controller
         if ($request->title) {
             $articles = $articles->where('title', 'LIKE', '%' . $request->title . '%');
         }
+        if ($request->tags) {
+            $articles = $articles->where('title', 'LIKE', '%' . $request->tags . '%');
+        }
         if ($request->category) {
             $articles = $articles->where('category_id', $request->category);
         }
         if ($request->location) {
             $articles = $articles->where('location', $request->location);
         }
-        if ($request->tags) {
-            $articles = $articles->where('title', 'LIKE', '%' . $request->tags . '%');
-        }
 
         if (count($articles->get()) != 0) {
+            if(auth('sanctum')->check()){
+                if(($request->title == null || $request->tags == null)){
+                    return ResponseFormatter::response(
+                        200,
+                        'success',
+                        UserInterestResource::collection(UserInterest::where('user_id', $request->user_id)->paginate(50))
+                    );
+                }
+            }
             return ResponseFormatter::response(
                 200,
                 'success',
