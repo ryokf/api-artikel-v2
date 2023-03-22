@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Models\UserInterest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,7 +43,7 @@ Route::controller(BookmarkController::class)->group(function(){
     Route::delete('/bookmark', 'destroy');
 });
 
-Route::controller(BookmarkController::class)->group(function(){
+Route::controller(CommentController::class)->group(function(){
     Route::post('/comment', 'store');
     Route::put('/comment', 'update');
     Route::delete('/comment', 'destroy');
