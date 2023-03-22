@@ -26,7 +26,31 @@ class CommentController extends Controller
         return ResponseFormatter::response(200, 'success', $commentData);
     }
 
-    function update(Request $request){}
+    function update(Request $request){
+        $comment = Comment::where('id', $request->id)?->first() ?? false;
 
-    function destroy(Request $request){}
+        if(!$comment){
+            return ResponseFormatter::response(404, 'error', "comment tidak ada");
+        }
+
+        $commentData = [
+            'comment' => $request->comment,
+            'updated' => true
+        ];
+
+        Comment::where('id', $request->id)->update($commentData);
+
+        return ResponseFormatter::response(200, 'success', $commentData);
+    }
+
+    function destroy(Request $request){
+        $comment = Comment::where('id', $request->id)?->first() ?? false;
+
+        if(!$comment){
+            return ResponseFormatter::response(404, 'error', "comment tidak ada");
+        }
+
+        Comment::where('id', $request->id)->delete();
+        return ResponseFormatter::response(200, 'success', $comment);
+    }
 }

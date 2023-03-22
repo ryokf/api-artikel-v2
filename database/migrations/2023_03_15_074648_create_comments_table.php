@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->foreignId('article_id');
             $table->text('comment');
+            $table->boolean('updated')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
