@@ -22,7 +22,6 @@ return new class extends Migration
             $table->text('content');
             $table->text('prologue')->nullable();
             $table->string('thumbnail');
-            $table->integer('viewer')->default(0);
             $table->string('location')->nullable();
             $table->string('tags')->nullable();
             $table->softDeletes();

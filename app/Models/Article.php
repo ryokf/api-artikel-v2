@@ -53,6 +53,16 @@ class Article extends Model
     {
         return $this->hasMany(Bookmark::class, 'article_id', 'id');
     }
+
+    /**
+     * Get all of the viewers for the Article
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function viewers(): HasMany
+    {
+        return $this->hasMany(Viewers::class, 'article_id', 'id');
+    }
 }
 
 

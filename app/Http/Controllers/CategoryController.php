@@ -13,7 +13,7 @@ class CategoryController extends Controller
         if($request->id){
             $category = Category::where('id', $request->id)?->with('articles')->get();
 
-            if ($category) {
+            if (count($category) != 0) {
                 return ResponseFormatter::response(
                     200,
                     'success',

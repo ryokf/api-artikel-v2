@@ -14,9 +14,20 @@ class ArticleController extends Controller
     function index(Request $request)
     {
         if ($request->slug || $request->id) {
-            $article = Article::where('slug', $request->slug)?->orWhere('id', $request->id)->first();
+            $article = Article::where('slug', $request->slug)?->orWhere('id', $request->id)->first();;
 
             if ($article) {
+
+                if (auth()->user()?->id != null) {
+                    $already_seen = Article::Where('user_id', auth()->user()->id)->where('article_id', $request->id)?->first() ?? false;
+
+                    if(!$already_seen){
+                        $already_seen->create([
+                            'user_id' => auth()->user()->id,
+                            'article_id' => $request->id
+                        ]);
+                    }
+                }
                 return ResponseFormatter::response(
                     200,
                     'success',
@@ -54,7 +65,7 @@ class ArticleController extends Controller
             return ResponseFormatter::response(
                 200,
                 'success',
-                ArticleResource::collection($articles->get())
+                ArticleResource::collection($articles->paginate(50))
             );
         } else {
             return ResponseFormatter::response(
@@ -91,7 +102,7 @@ class ArticleController extends Controller
 
         $newArticle = Article::where('slug', $slug)->orWhere('id', $request->id);
 
-        if(count($newArticle->get()) != 0){
+        if (count($newArticle->get()) != 0) {
             return ResponseFormatter::response(
                 200,
                 'success',
@@ -113,7 +124,6 @@ class ArticleController extends Controller
             'content' => 'required',
             'prologue' => 'max:512',
             'category_id' => 'required',
-            'writer_id' => 'required',
         ]);
 
         $titleExp = explode(" ", $request->title);
@@ -125,14 +135,13 @@ class ArticleController extends Controller
             'content' => $request->content,
             'prologue' => $request->prologue,
             'category_id' => $request->category_id,
-            'writer_id' => $request->writer_id,
             'thumbnail' => $request->thumbnail,
             'tags' => $request->tags,
         ]);
 
         $updatedArticle = Article::where('id', $request->id);
 
-        if(count($updatedArticle->get()) != 0){
+        if (count($updatedArticle->get()) != 0) {
             return ResponseFormatter::response(
                 200,
                 'success',
@@ -151,7 +160,7 @@ class ArticleController extends Controller
     {
         $deletedArticle = Article::where('id', $request->id)->get();
 
-        if(count($deletedArticle) != 0){
+        if (count($deletedArticle) != 0) {
 
             Article::where('id', $request->id)->delete();
 

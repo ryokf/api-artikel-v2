@@ -26,7 +26,6 @@ class ArticleFactory extends Factory
             'content' => $this->faker->text(rand(500,900)),
             'prologue' => $this->faker->paragraph(),
             'thumbnail' => 'https://source.unsplash.com/random/' . rand(5,10) * 100 . 'x' .  rand(5,10) * 100,
-            'viewer' => rand(10,200),
             'location' => 'jakarta'
         ];
     }

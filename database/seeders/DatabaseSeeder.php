@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Comment;
 use App\Models\User;
 use App\Models\UserInterest;
+use App\Models\viewers;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
         Comment::factory(50)->create();
         User::factory(10)->create();
         UserInterest::factory(20)->create();
+        viewers::factory(20)->create();
 
         Category::create([
             'name' => 'politik',
