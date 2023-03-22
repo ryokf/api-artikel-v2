@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserInterestController;
 use App\Models\UserInterest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,8 +50,7 @@ Route::controller(CommentController::class)->group(function(){
     Route::delete('/comment', 'destroy');
 });
 
-Route::controller(UserInterest::class)->group(function(){
-    Route::get('/user-interest', 'index');
+Route::controller(UserInterestController::class)->group(function(){
     Route::post('/user-interest', 'store');
     Route::delete('/user-interest', 'destroy');
 });
