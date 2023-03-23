@@ -8,8 +8,11 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use app\Helpers\ResponseFormatter;
 use App\Http\Resources\ArticleDetailResource;
+use App\Http\Resources\CategoryMemberResource;
 use App\Http\Resources\UserInterestResource;
+use App\Models\Category;
 use App\Models\UserInterest;
+use App\Models\Viewers;
 
 class ArticleController extends Controller
 {
@@ -19,13 +22,12 @@ class ArticleController extends Controller
             $article = Article::where('slug', $request->slug)?->orWhere('id', $request->id)->first();;
 
             if ($article) {
-
-                if (auth()->user()?->id != null) {
-                    $already_seen = Article::Where('user_id', auth()->user()->id)->where('article_id', $request->id)?->first() ?? false;
+                if ($request->user_id != null) {
+                    $already_seen = Viewers::Where('user_id', $request->user_id)->where('article_id', $request->id)?->first() ?? false;
 
                     if(!$already_seen){
-                        $already_seen->create([
-                            'user_id' => auth()->user()->id,
+                        Viewers::create([
+                            'user_id' => $request->user_id,
                             'article_id' => $request->id
                         ]);
                     }
@@ -66,10 +68,12 @@ class ArticleController extends Controller
         if (count($articles->get()) != 0) {
             if(auth('sanctum')->check()){
                 if(($request->title == null || $request->tags == null)){
+                    $userInterest = UserInterest::where('user_id', $request->user_id)->get();
                     return ResponseFormatter::response(
                         200,
                         'success',
-                        UserInterestResource::collection(UserInterest::where('user_id', $request->user_id)->paginate(50))
+                        UserInterestResource::collection($userInterest)
+                        // 'data'
                     );
                 }
             }
