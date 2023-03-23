@@ -139,7 +139,16 @@ class ArticleController extends Controller
             'content' => 'required',
             'prologue' => 'max:512',
             'category_id' => 'required',
+            'writer_id' => 'required',
         ]);
+
+        if($request->writer_id != Article::where('id', $request->id)->first()->writer_id){
+            return ResponseFormatter::response(
+                404,
+                'error',
+                'anda tidak terautentikasi'
+            );
+        }
 
         $titleExp = explode(" ", $request->title);
         $slug = strtolower(implode("-", $titleExp));

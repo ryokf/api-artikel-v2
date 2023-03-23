@@ -23,9 +23,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(ArticleController::class)->group(function(){
     Route::get('/article', 'index');
-    Route::post('/article', 'store');
-    Route::put('/article', 'update');
-    Route::delete('/article', 'destroy');
+    Route::post('/article', 'store')->middleware('auth:sanctum');
+    Route::put('/article', 'update')->middleware('auth:sanctum');
+    Route::delete('/article', 'destroy')->middleware('auth:sanctum');
 });
 
 Route::controller(CategoryController::class)->group(function(){
@@ -35,19 +35,19 @@ Route::controller(CategoryController::class)->group(function(){
     Route::delete('/category', 'destroy');
 });
 
-Route::controller(BookmarkController::class)->group(function(){
+Route::controller(BookmarkController::class)->middleware('auth:sanctum')->group(function(){
     Route::get('/bookmark', 'index');
     Route::post('/bookmark', 'store');
     Route::delete('/bookmark', 'destroy');
 });
 
-Route::controller(CommentController::class)->group(function(){
+Route::controller(CommentController::class)->middleware('auth:sanctum')->group(function(){
     Route::post('/comment', 'store');
     Route::put('/comment', 'update');
     Route::delete('/comment', 'destroy');
 });
 
-Route::controller(UserInterestController::class)->group(function(){
+Route::controller(UserInterestController::class)->middleware('auth:sanctum')->group(function(){
     Route::post('/user-interest', 'store');
     Route::delete('/user-interest', 'destroy');
 });
