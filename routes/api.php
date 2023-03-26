@@ -63,7 +63,7 @@ Route::controller(AuthController::class)->group(function(){
 
 Route::controller(UserController::class)->group(function(){
     Route::get('/user', 'show')->middleware('auth:sanctum');
-    Route::put('/user', 'update')->middleware('auth:sanctum');
+    Route::post('/putuser', 'update')->middleware('auth:sanctum');
 });
 
 

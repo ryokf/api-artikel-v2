@@ -157,7 +157,7 @@ class ArticleController extends Controller
             'category_id' => 'required',
         ]);
 
-        $writerId = Article::where('id', $request->id)->first()->writer_id;
+        $writerId = Article::where('id', $request->id)->first()?->writer_id;
 
         if ($writerId != $request->user()->id) {
             return ResponseFormatter::response(
