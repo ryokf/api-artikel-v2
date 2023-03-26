@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         Comment::factory(50)->create();
         User::factory(10)->create();
         UserInterest::factory(20)->create();
-        viewers::factory(20)->create();
+        // viewers::factory(20)->create();
 
         Category::create([
             'name' => 'politik',

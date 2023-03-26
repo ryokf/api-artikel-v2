@@ -12,12 +12,19 @@ use Illuminate\Http\Request;
 class BookmarkController extends Controller
 {
     function index(Request $request){
+        if($request->user_id == null){
+            return ResponseFormatter::response(404, 'error', "anda belum login");
+        }
+
         $bookmark = Bookmark::where('user_id', $request->user_id)->paginate(20);
 
         return ResponseFormatter::response(200, 'success', BookmarkDetailResource::collection($bookmark));
     }
 
     function store(Request $request){
+        if($request->user_id == null){
+            return ResponseFormatter::response(404, 'error', "anda belum login");
+        }
         $article = Article::where('id', $request->article_id)?->first() ?? false;
 
         if(!$article){
@@ -41,6 +48,9 @@ class BookmarkController extends Controller
     }
 
     function destroy(Request $request){
+        if($request->user_id == null){
+            return ResponseFormatter::response(404, 'error', "anda belum login");
+        }
         $bookmark =  Bookmark::where('id',$request->id)->first() ?? false;
 
         if(!$bookmark){
