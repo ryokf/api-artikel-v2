@@ -16,11 +16,8 @@ class ArticleFactory extends Factory
      */
     public function definition()
     {
-        $fakeTitle = $this->faker->words(rand(5,15));
-
         return [
-            'title' => implode(" ", $fakeTitle),
-            'slug' => strtolower(implode("-", $fakeTitle)) ,
+            'title' => $this->faker->word(rand(5,15)),
             'category_id' => rand(1,10),
             'writer_id' => rand(1,5),
             'content' => $this->faker->text(rand(500,900)),

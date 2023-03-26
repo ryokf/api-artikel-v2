@@ -60,11 +60,9 @@ class ArticleController extends Controller
 
         if ($request->order == 'latest') {
             $articles = Article::latest();
-        }
-        else if($request->order == 'oldest'){
+        } else if ($request->order == 'oldest') {
             $articles = Article::oldest();
-        }
-        else {
+        } else {
             $articles = Article::inRandomOrder();
         }
 
@@ -121,24 +119,19 @@ class ArticleController extends Controller
             'content' => 'required',
             'prologue' => 'max:512',
             'category_id' => 'required',
-            'writer_id' => 'required',
         ]);
-
-        $titleExp = explode(" ", $request->title);
-        $slug = strtolower(implode("-", $titleExp));
 
         Article::create([
             'title' => $request->title,
-            'slug' => $slug,
             'content' => $request->content,
             'prologue' => $request->prologue,
             'category_id' => $request->category_id,
-            'writer_id' => $request->writer_id,
+            'writer_id' => $request->user()->id,
             'thumbnail' => $request->thumbnail,
             'tags' => $request->tags,
         ]);
 
-        $newArticle = Article::where('slug', $slug)->orWhere('id', $request->id);
+        $newArticle = Article::Where('title', $request->title);
 
         if (count($newArticle->get()) != 0) {
             return ResponseFormatter::response(
@@ -162,10 +155,11 @@ class ArticleController extends Controller
             'content' => 'required',
             'prologue' => 'max:512',
             'category_id' => 'required',
-            'writer_id' => 'required',
         ]);
 
-        if ($request->writer_id != Article::where('id', $request->id)->first()->writer_id) {
+        $writerId = Article::where('id', $request->id)->first()->writer_id;
+
+        if ($writerId != $request->user()->id) {
             return ResponseFormatter::response(
                 404,
                 'error',
@@ -173,12 +167,8 @@ class ArticleController extends Controller
             );
         }
 
-        $titleExp = explode(" ", $request->title);
-        $slug = strtolower(implode("-", $titleExp));
-
         Article::Where('id', $request->id)->update([
             'title' => $request->title,
-            'slug' => $slug,
             'content' => $request->content,
             'prologue' => $request->prologue,
             'category_id' => $request->category_id,
@@ -208,6 +198,16 @@ class ArticleController extends Controller
         $deletedArticle = Article::where('id', $request->id)->get();
 
         if (count($deletedArticle) != 0) {
+
+            $writerId = Article::where('id', $request->id)->first()?->writer_id;
+
+            if ($writerId != $request->user()->id) {
+                return ResponseFormatter::response(
+                    404,
+                    'error',
+                    'anda tidak terautentikasi'
+                );
+            }
 
             Article::where('id', $request->id)->delete();
 
