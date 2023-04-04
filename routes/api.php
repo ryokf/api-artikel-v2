@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BookmarkController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserInterestController;
 use App\Models\UserInterest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserInterestController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,8 +58,11 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('/login', 'login');
     Route::post('/register', 'register');
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
-    Route::post('/verified', 'verified')->middleware('auth:sanctum');
-    Route::post('/forget-password', 'forgetPassword');
+
+    Route::get('/forget-password', 'forgetPassword');
+
+    Route::get('/verify-email', 'verifyEmail')->middleware('auth:sanctum');
+    Route::get('/verify/{email}', 'verifyProcess');
 });
 
 Route::controller(UserController::class)->group(function(){

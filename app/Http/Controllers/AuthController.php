@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use app\Helpers\ResponseFormatter;
 use App\Models\User;
+use App\Mail\VerifEmail;
 use Illuminate\Http\Request;
+use app\Helpers\ResponseFormatter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Registered;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -80,5 +83,24 @@ class AuthController extends Controller
         $data->delete();
 
         return ResponseFormatter::response(404, 'success', $data);
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        Mail::to($request->user()->email)->send(new VerifEmail($request->user()));
+
+        return ResponseFormatter::response(200, 'success', 'email sudah terkirim');
+    }
+
+    function verifyProcess($email){
+        User::where('email', $email)->update([
+            'email_verified_at' => date('Y-m-d H:i:s')
+        ]);
+
+        return view('auth.verifySucess');
+    }
+
+    function forgetPassword(Request $request){
+        return 'forget password';
     }
 }
