@@ -5,15 +5,70 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eee;
+            height: 100vh;
+        }
+
+        .container {
+            margin: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+            background-color: #fff;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        .btn-verif {
+            padding: 10px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            width: 100px;
+            height: 45px;
+            background: #333;
+            border-radius: 10px;
+            text-decoration: none;
+        }
+
+        .btn-verif span {
+            color: white;
+        }
+
+        p {
+            color: #aaa;
+            display: flex;
+            word-break: break-all;
+        }
+
+        .link {
+            color: rgb(0, 137, 216);
+        }
+    </style>
 </head>
 
 <body>
-    <a href="http://{{ request()->getHost() }}/api/verify/{{ $user->email }}" class="btn btn-primary">verifikasi email</a>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
-    </script>
+
+    <div class="container">
+        <h1>Hello, {{ $username }}</h1>
+        <p>Please click the button below to verify your email address.</p>
+        <a class="btn-verif" href="http://{{ request()->getHost() }}:8000/api/verify/{{ $hashedEmail }}">
+            <span class="btn btn-primary">verify email address</span>
+        </a>
+        <p>If you did not create an account, no further action is required.</p>
+
+        <p>regards,<br>Confess News</p>
+
+        <hr>
+        <p>
+            If you're having trouble clicking the "Verify Email Address" button, copy and paste the URL below into your
+            web browser:</p>
+        <p class="link">http://{{ request()->getHost() }}:8000/api/verify/{{ $hashedEmail }}</p>
+    </div>
 </body>
 
 </html>

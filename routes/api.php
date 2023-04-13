@@ -59,10 +59,10 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('/register', 'register');
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
 
-    Route::get('/forget-password', 'forgetPassword');
+    Route::post('/forget-password', 'forgetPassword')->middleware('auth:sanctum');
 
     Route::get('/verify-email', 'verifyEmail')->middleware('auth:sanctum');
-    Route::get('/verify/{email}', 'verifyProcess');
+    Route::get('/verify/{email?}', 'verifyProcess')->where('email', '(.*)');
 });
 
 Route::controller(UserController::class)->group(function(){

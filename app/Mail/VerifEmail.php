@@ -13,16 +13,18 @@ class VerifEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
+    public $hashedEmail;
+    public $username;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($hashedEmail, $username)
     {
-        $this->user = $user;
+        $this->hashedEmail = $hashedEmail;
+        $this->username = $username;
     }
 
     /**

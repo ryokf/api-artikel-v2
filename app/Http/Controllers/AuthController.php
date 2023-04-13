@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Session;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Validation\ValidationException;
 
@@ -87,20 +88,67 @@ class AuthController extends Controller
 
     public function verifyEmail(Request $request)
     {
-        Mail::to($request->user()->email)->send(new VerifEmail($request->user()));
+        $hashedEmail = Hash::make(auth()->user()->email);
+
+        Mail::to($request->user()->email)->send(new VerifEmail($hashedEmail, auth()->user()->username));
 
         return ResponseFormatter::response(200, 'success', 'email sudah terkirim');
     }
 
-    function verifyProcess($email){
-        User::where('email', $email)->update([
-            'email_verified_at' => date('Y-m-d H:i:s')
-        ]);
+    function verifyProcess(Request $request, $email)
+    {
+        if (count($request->all()) != 0) {
+            $credentials = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+            ]);
 
-        return view('auth.verifySucess');
+            if (Auth::attempt($credentials)) {
+                // $request->session()->regenerate();
+
+                $getId = User::where('email', $request->email)->get('id');
+
+                Auth::loginUsingId($getId);
+
+                if (!Hash::check($request->email, $email)) {
+                    return 'verifikasi gagal, silahkan ulangi lagi!';
+                }
+
+                User::where('email', $request->email)->update([
+                    'email_verified_at' => date('Y-m-d H:i:s')
+                ]);
+
+                return view('auth.verifySucess');
+            }
+
+            Session::flash('error', 'email atau password anda tidak sesuai');
+        }
+
+        if (!Auth::check()) {
+            return view('auth.login_page', ['email' => $email]);
+        }
     }
 
-    function forgetPassword(Request $request){
-        return 'forget password';
+    function forgetPassword(Request $request)
+    {
+        $request->validate([
+            'old' => ['required'],
+            'new' => ['required'],
+            'confirm' => ['required'],
+        ]);
+
+        if (!Hash::check($request->old, auth()->user()->password)) {
+            return ResponseFormatter::response(200, 'error', 'password lama tidak sesuai');
+        }
+
+        if ($request->new != $request->confirm) {
+            return ResponseFormatter::response(200, 'error', 'password konfirmasi tidak sama');
+        }
+
+        User::where('id', auth()->user()->id)->update([
+            'password' => Hash::make($request->new)
+        ]);
+
+        return ResponseFormatter::response(200, 'success', 'password berhasil dirubah');
     }
 }

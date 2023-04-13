@@ -4,14 +4,16 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\User;
 use App\Models\Article;
+use App\Models\Comment;
+use App\Models\viewers;
 use App\Models\Bookmark;
 use App\Models\Category;
-use App\Models\Comment;
-use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\UserInterest;
-use App\Models\viewers;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,6 +30,19 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
         UserInterest::factory(20)->create();
         // viewers::factory(20)->create();
+
+        User::create([
+            'username' => 'ryokf',
+            'first_name' => 'ryo',
+            'last_name' => 'khrisna',
+            'email' => 'ryokhrisnaf@gmail.com',
+            'email_verified_at' => now(),
+            'phone' => null,
+            'address' => null,
+            'photo' => 'https://source.unsplash.com/random/' . rand(5,10) * 100 . 'x' .  rand(5,10) * 100,
+            'password' => Hash::make('rahasia'), // password
+            'remember_token' => Str::random(10),
+        ]);
 
         Category::create([
             'name' => 'politik',
