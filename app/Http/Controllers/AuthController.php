@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Mail\VerifEmail;
 use Illuminate\Http\Request;
 use app\Helpers\ResponseFormatter;
+use App\Jobs\SendEmailVerifQueue;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -89,8 +90,10 @@ class AuthController extends Controller
     public function verifyEmail(Request $request)
     {
         $hashedEmail = Hash::make(auth()->user()->email);
+        $email = $request->user()->email;
+        $username = auth()->user()->username;
 
-        Mail::to($request->user()->email)->send(new VerifEmail($hashedEmail, auth()->user()->username));
+        SendEmailVerifQueue::dispatch($email, $hashedEmail, $username);
 
         return ResponseFormatter::response(200, 'success', 'email sudah terkirim');
     }
