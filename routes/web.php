@@ -24,8 +24,10 @@ Route::get('/test', function(Request $request){
     ]);
 });
 
-// Route::get('/verify/{email}', 'verifyProcess');
-
 Route::get('/login', function(){
     return view();
 });
+
+Route::get('/api/reset-password/{token}', function (string $token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');

@@ -59,16 +59,20 @@ Route::controller(AuthController::class)->group(function(){
     Route::post('/register', 'register');
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
 
-    Route::post('/forget-password', 'forgetPassword')->middleware('auth:sanctum');
+    Route::post('/change-password', 'changePassword')->middleware('auth:sanctum');
 
     Route::get('/verify-email', 'verifyEmail')->middleware('auth:sanctum');
     Route::get('/verify/{email?}', 'verifyProcess')->where('email', '(.*)');
+
+    Route::post('/forgot-password', 'forgetPassword')->middleware('guest');
+    Route::post('/reset-password', 'resetPassword')->middleware('guest');
 });
 
 Route::controller(UserController::class)->group(function(){
     Route::get('/user', 'show')->middleware('auth:sanctum');
     Route::post('/putuser', 'update')->middleware('auth:sanctum');
 });
+
 
 
 
